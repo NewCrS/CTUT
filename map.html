@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bản đồ CTUT - UniCheck</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden; /* Bỏ thanh cuộn nếu muốn ảnh cố định vừa vặn màn hình */
+      background-color: #000000; /* Nền đen làm nổi bật ảnh */
+    }
+
+    .fullscreen-map {
+      width: 100vw;       /* 100% chiều rộng màn hình */
+      height: 100vh;      /* 100% chiều cao màn hình */
+      object-fit: contain; /* Giữ nguyên tỷ lệ ảnh, không bị méo/bị biến dạng */
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="assets/map/map.png" alt="Bản đồ" class="fullscreen-map">
+
+</body>
+</html>
