@@ -1,0 +1,8 @@
+body {
+    font-family: 'Comfortaa', cursive; 
+    display: flex;
+    justify-content: center;
+    align-items: top;  
+    min-height: 100vh;     
+    margin: 0;
+}
