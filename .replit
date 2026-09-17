@@ -1,7 +1,5 @@
-modules = ["web"]
+run = "python3 -m http.server 8000"
 
-[nix]
-channel = "stable-25_05"
-
-[agent]
-expertMode = true
+[[ports]]
+localPort = 8000
+externalPort = 80
