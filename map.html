@@ -98,7 +98,7 @@
 <body>
 
   <!-- Nút quay về trang chủ -->
-  <a href="index.html" class="back-btn" title="Quay về trang chủ">
+  <a href="./" class="back-btn" title="Quay về trang chủ">
     <svg viewBox="0 0 24 24">
       <line x1="19" y1="12" x2="5" y2="12"></line>
       <polyline points="12 19 5 12 12 5"></polyline>
@@ -112,22 +112,50 @@
 
   <script>
     const elem = document.getElementById('map-image');
+    const container = elem.parentElement;
     
-    // Khởi tạo Panzoom mặc định cho ảnh
+    // Khởi tạo Panzoom tối ưu cho di động
     const panzoom = Panzoom(elem, {
       maxScale: 6,
       minScale: 1,
-      contain: 'outside',
+      contain: 'automatic', // Giúp ảnh tự do co giãn mà không bị giật khi chưa zoom
       cursor: 'grab'
     });
 
-    // Kích hoạt Pan (kéo thả) & Pinch Zoom (2 ngón tay) tự động cho điện thoại
-    elem.parentElement.addEventListener('pointerdown', panzoom.handleDown);
-    elem.parentElement.addEventListener('pointermove', panzoom.handleMove);
-    elem.parentElement.addEventListener('pointerup', panzoom.handleUp);
+    // Kích hoạt Pan (kéo thả bằng 1 ngón hoặc chuột)
+    container.addEventListener('pointerdown', panzoom.handleDown);
+    container.addEventListener('pointermove', panzoom.handleMove);
+    container.addEventListener('pointerup', panzoom.handleUp);
 
-    // Kích hoạt Zoom bằng con trỏ chuột trên Desktop
-    elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
+    // Kích hoạt Zoom bằng cuộn chuột trên Desktop
+    container.addEventListener('wheel', panzoom.zoomWithWheel);
+
+    // Xử lý riêng thao tác chụm/xòe 2 ngón tay (Pinch to Zoom) mượt mà trên Mobile
+    let initialDistance = 0;
+    container.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        initialDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+      }
+    });
+
+    container.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2) {
+        const currentDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        const factor = currentDistance / initialDistance;
+        if (factor > 1) {
+          panzoom.zoomIn();
+        } else if (factor < 1) {
+          panzoom.zoomOut();
+        }
+        initialDistance = currentDistance;
+      }
+    });
   </script>
 
 </body>
