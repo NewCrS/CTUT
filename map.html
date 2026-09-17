@@ -2,8 +2,12 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Bản đồ CTUT - UniCheck</title>
+  
+  <!-- Nhúng thư viện Panzoom để Zoom & Kéo thả -->
+  <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
+
   <style>
     * {
       margin: 0;
@@ -14,21 +18,105 @@
     html, body {
       width: 100%;
       height: 100%;
-      overflow: hidden; /* Bỏ thanh cuộn nếu muốn ảnh cố định vừa vặn màn hình */
-      background-color: #000000; /* Nền đen làm nổi bật ảnh */
+      overflow: hidden;
+      background-color: #111111;
+      font-family: 'Comfortaa', sans-serif, system-ui;
+      touch-action: none;
     }
 
-    .fullscreen-map {
-      width: 100vw;       /* 100% chiều rộng màn hình */
-      height: 100vh;      /* 100% chiều cao màn hình */
-      object-fit: contain; /* Giữ nguyên tỷ lệ ảnh, không bị méo/bị biến dạng */
-      display: block;
+    /* Nút mũi tên quay về góc trên bên trái */
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 9999; /* Đảm bảo nút luôn nổi lên trên cùng của bản đồ */
+      
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      
+      /* Hiệu ứng kính mờ nổi bật */
+      background-color: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      
+      color: #ffffff;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    /* Hiệu ứng Rê chuột / Bấm nút */
+    .back-btn:hover {
+      background-color: rgba(255, 255, 255, 0.4);
+      transform: scale(1.08);
+    }
+
+    .back-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Khung hiển thị bản đồ */
+    .map-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #map-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      cursor: grab;
+    }
+
+    #map-image:active {
+      cursor: grabbing;
     }
   </style>
 </head>
 <body>
 
-  <img src="assets/map/map.png" alt="Bản đồ" class="fullscreen-map">
+  <!-- Nút quay về index.html -->
+  <a href="index.html" class="back-btn" title="Quay về trang chủ">&#10094;</a>
+
+  <!-- Container chứa bản đồ -->
+  <div class="map-container">
+    <img id="map-image" src="assets/map/map.png" alt="Bản đồ CTUT">
+  </div>
+
+  <script>
+    const elem = document.getElementById('map-image');
+    
+    // Khởi tạo tính năng Zoom & Pan
+    const panzoom = Panzoom(elem, {
+      maxScale: 5,
+      minScale: 1,
+      contain: 'outside',
+      cursor: 'grab'
+    });
+
+    // Zoom bằng con trỏ chuột trên Desktop
+    elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
+
+    // Pinch to Zoom trên Điện thoại
+    elem.parentElement.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        panzoom.zoomWithWheel(e);
+      }
+    });
+  </script>
 
 </body>
 </html>
