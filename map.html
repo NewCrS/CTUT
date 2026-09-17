@@ -2,10 +2,10 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Bản đồ CTUT - UniCheck</title>
   
-  <!-- Thư viện Panzoom -->
+  <!-- Thư viện Panzoom chính thức -->
   <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
 
   <style>
@@ -18,7 +18,7 @@
     html, body {
       width: 100%;
       height: 100%;
-      height: 100dvh; /* Khắc phục lỗi thanh địa chỉ trình duyệt trên điện thoại */
+      height: 100dvh;
       overflow: hidden;
       background-color: #111111;
       font-family: 'Comfortaa', sans-serif, system-ui;
@@ -28,11 +28,11 @@
     .map-container {
       width: 100vw;
       height: 100vh;
-      height: 100dvh; /* Sử dụng dvh để cố định khung hình trên mobile */
+      height: 100dvh;
       display: flex;
       justify-content: center;
       align-items: center;
-      touch-action: none;
+      touch-action: none; /* Rất quan trọng để chặn trình duyệt cuộn trang thay vì zoom */
       overflow: hidden;
     }
 
@@ -112,29 +112,22 @@
 
   <script>
     const elem = document.getElementById('map-image');
-    const container = document.getElementById('scene');
     
-    // Khởi tạo Panzoom
+    // Khởi tạo Panzoom mặc định cho ảnh
     const panzoom = Panzoom(elem, {
       maxScale: 6,
       minScale: 1,
-      contain: 'inside', // Cố định ảnh nằm trọn trong khung hình lúc chưa zoom
-      startTransform: 'scale(1)' // Đảm bảo căn giữa tuyệt đối ban đầu
+      contain: 'outside',
+      cursor: 'grab'
     });
 
-    // Zoom bằng cuộn chuột trên Desktop
-    container.addEventListener('wheel', panzoom.zoomWithWheel);
+    // Kích hoạt Pan (kéo thả) & Pinch Zoom (2 ngón tay) tự động cho điện thoại
+    elem.parentElement.addEventListener('pointerdown', panzoom.handleDown);
+    elem.parentElement.addEventListener('pointermove', panzoom.handleMove);
+    elem.parentElement.addEventListener('pointerup', panzoom.handleUp);
 
-    // Kích hoạt Zoom & Kéo thả trên Cảm ứng / Điện thoại
-    elem.parentElement.addEventListener('pointerdown', (e) => {
-      panzoom.handleDown(e);
-    });
-    document.addEventListener('pointermove', (e) => {
-      panzoom.handleMove(e);
-    });
-    document.addEventListener('pointerup', (e) => {
-      panzoom.handleUp(e);
-    });
+    // Kích hoạt Zoom bằng con trỏ chuột trên Desktop
+    elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
   </script>
 
 </body>
