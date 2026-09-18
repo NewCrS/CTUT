@@ -125,22 +125,31 @@
     }
 
     // ==========================================
-    // 1. XỬ LÝ SỰ KIỆN CHUỘT (DESKTOP)
+    // 1. XỬ LÝ SỰ KIỆN CHUỘT & TOUCHPAD (DESKTOP)
     // ==========================================
 
-    // Lăn chuột để Zoom tại vị trí con trỏ chuột
+    // Lăn chuột / Touchpad Pinch-to-zoom tại vị trí con trỏ
     container.addEventListener('wheel', (e) => {
       e.preventDefault();
-      const zoomFactor = e.deltaY < 0 ? 0.35 : -0.35;
+      
+      let zoomFactor;
+      if (e.ctrlKey) {
+        // Cử chỉ pinch-to-zoom trên Touchpad Laptop (MacBook / Windows Precision Touchpad)
+        zoomFactor = -e.deltaY * 0.01;
+      } else {
+        // Nấc cuộn chuột cơ (Mouse Wheel)
+        zoomFactor = e.deltaY < 0 ? 0.25 : -0.25;
+      }
+
       const newScale = Math.min(Math.max(1, scale + zoomFactor), MAX_SCALE);
 
       if (newScale !== scale) {
         const rect = container.getBoundingClientRect();
-        // Tọa độ chuột so với tâm container
+        // Tọa độ con trỏ chuột/Touchpad so với tâm container
         const mouseX = e.clientX - (rect.left + rect.width / 2);
         const mouseY = e.clientY - (rect.top + rect.height / 2);
 
-        // Tính toán dịch chuyển tâm zoom về vị trí con trỏ chuột
+        // Bù trừ tọa độ dịch chuyển tâm zoom theo con trỏ chuột
         const ratio = newScale / scale;
         pointX = mouseX - (mouseX - pointX) * ratio;
         pointY = mouseY - (mouseY - pointY) * ratio;
@@ -155,7 +164,7 @@
       }
     }, { passive: false });
 
-    // Nhấn giữ chuột để bắt đầu kéo
+    // Nhấn giữ chuột để bắt đầu kéo (Drag)
     container.addEventListener('mousedown', (e) => {
       if (e.button !== 0) return; // Chỉ nhận chuột trái
       if (scale > 1) {
@@ -184,7 +193,7 @@
     });
 
     // ==========================================
-    // 2. XỬ LÝ SỰ KIỆN CẢM ỨNG (MOBILE)
+    // 2. XỬ LÝ SỰ KIỆN CẢM ỨNG (MOBILE / TOUCH SCREEN)
     // ==========================================
 
     container.addEventListener('touchstart', (e) => {
