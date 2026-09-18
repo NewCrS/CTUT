@@ -2,12 +2,8 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>Bản đồ CTUT - UniCheck</title>
-  
-  <!-- Thư viện Panzoom chính thức -->
-  <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+  <title>Sơ đồ trường</title>
   <style>
     * {
       margin: 0;
@@ -15,146 +11,159 @@
       box-sizing: border-box;
     }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      height: 100dvh;
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #f4f7f6;
       overflow: hidden;
-      background-color: #111111;
-      font-family: 'Comfortaa', sans-serif, system-ui;
-    }
-
-    /* Khung chứa ảnh toàn màn hình */
-    .map-container {
       width: 100vw;
       height: 100vh;
-      height: 100dvh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      touch-action: none; /* Rất quan trọng để chặn trình duyệt cuộn trang thay vì zoom */
-      overflow: hidden;
     }
 
-    #map-image {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      user-select: none;
-      -webkit-user-drag: none;
-      cursor: grab;
-    }
-
-    #map-image:active {
-      cursor: grabbing;
-    }
-
-    /* Nút Quay về dạng Icon SVG Kính mờ */
+    /* Nút quay lại hoàn toàn trong suốt */
     .back-btn {
       position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 9999;
-      
+      top: 16px;
+      left: 16px;
+      z-index: 999;
       display: flex;
       align-items: center;
       justify-content: center;
-      
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      
-      background-color: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      
-      color: #ffffff;
+      width: 44px;
+      height: 44px;
+      background: transparent;
+      border: none;
+      color: #1a1a1a;
       text-decoration: none;
-      transition: all 0.2s ease;
-    }
-
-    .back-btn svg {
-      width: 22px;
-      height: 22px;
-      fill: none;
-      stroke: #ffffff;
-      stroke-width: 2.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .back-btn:hover {
-      background-color: rgba(255, 255, 255, 0.35);
-      transform: scale(1.05);
+      transition: transform 0.1s ease, opacity 0.2s ease;
     }
 
     .back-btn:active {
-      transform: scale(0.95);
+      transform: scale(0.85);
+      opacity: 0.6;
+    }
+
+    .back-btn svg {
+      width: 32px;
+      height: 32px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.25));
+    }
+
+    .map-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      touch-action: none; /* Tránh xung đột cuộn trang mặc định của trình duyệt */
+    }
+
+    .map-container img {
+      width: 100%;
+      max-width: 900px;
+      height: auto;
+      display: block;
+      transform-origin: center center;
+      transition: transform 0.05s ease-out;
+      will-change: transform;
     }
   </style>
 </head>
 <body>
 
-  <!-- Nút quay về trang chủ -->
-  <a href="./" class="back-btn" title="Quay về trang chủ">
+  <!-- Nút quay lại chỉ chứa mũi tên < trong suốt -->
+  <a href="../" class="back-btn" aria-label="Quay lại">
     <svg viewBox="0 0 24 24">
-      <line x1="19" y1="12" x2="5" y2="12"></line>
-      <polyline points="12 19 5 12 12 5"></polyline>
+      <polyline points="15 18 9 12 15 6"></polyline>
     </svg>
   </a>
-
-  <!-- Khung chứa ảnh bản đồ -->
-  <div class="map-container" id="scene">
-    <img id="map-image" src="assets/map/map.png" alt="Bản đồ CTUT">
+  
+  <div class="map-container" id="mapContainer">
+    <img src="../assets/map/map.png" alt="Sơ đồ trường" id="mapImg">
   </div>
 
   <script>
-    const elem = document.getElementById('map-image');
-    const container = elem.parentElement;
-    
-    // Khởi tạo Panzoom tối ưu cho di động
-    const panzoom = Panzoom(elem, {
-      maxScale: 6,
-      minScale: 1,
-      contain: 'automatic', // Giúp ảnh tự do co giãn mà không bị giật khi chưa zoom
-      cursor: 'grab'
-    });
+    const container = document.getElementById('mapContainer');
+    const img = document.getElementById('mapImg');
 
-    // Kích hoạt Pan (kéo thả bằng 1 ngón hoặc chuột)
-    container.addEventListener('pointerdown', panzoom.handleDown);
-    container.addEventListener('pointermove', panzoom.handleMove);
-    container.addEventListener('pointerup', panzoom.handleUp);
-
-    // Kích hoạt Zoom bằng cuộn chuột trên Desktop
-    container.addEventListener('wheel', panzoom.zoomWithWheel);
-
-    // Xử lý riêng thao tác chụm/xòe 2 ngón tay (Pinch to Zoom) mượt mà trên Mobile
+    let scale = 1;
+    let pointX = 0;
+    let pointY = 0;
+    let startX = 0;
+    let startY = 0;
     let initialDistance = 0;
+    let initialScale = 1;
+    let lastTap = 0;
+
+    function updateTransform() {
+      img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+    }
+
+    // Xử lý sự kiện bắt đầu chạm
     container.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 2) {
+      if (e.touches.length === 1) {
+        // Kéo di chuyển ảnh (Pan)
+        startX = e.touches[0].clientX - pointX;
+        startY = e.touches[0].clientY - pointY;
+      } else if (e.touches.length === 2) {
+        // Phóng to/thu nhỏ bằng 2 ngón tay (Pinch)
         initialDistance = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
           e.touches[0].clientY - e.touches[1].clientY
         );
+        initialScale = scale;
       }
     });
 
+    // Xử lý sự kiện di chuyển ngón tay
     container.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 2) {
+      e.preventDefault();
+
+      if (e.touches.length === 1 && scale > 1) {
+        // Di chuyển ảnh khi đang zoom
+        pointX = e.touches[0].clientX - startX;
+        pointY = e.touches[0].clientY - startY;
+        updateTransform();
+      } else if (e.touches.length === 2) {
+        // Phóng to / Thu nhỏ
         const currentDistance = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
           e.touches[0].clientY - e.touches[1].clientY
         );
-        const factor = currentDistance / initialDistance;
-        if (factor > 1) {
-          panzoom.zoomIn();
-        } else if (factor < 1) {
-          panzoom.zoomOut();
+        
+        scale = Math.min(Math.max(1, initialScale * (currentDistance / initialDistance)), 4);
+        
+        if (scale === 1) {
+          pointX = 0;
+          pointY = 0;
         }
-        initialDistance = currentDistance;
+        updateTransform();
       }
+    }, { passive: false });
+
+    // Xử lý Double Tap (Chạm 2 lần liên tiếp để zoom nhanh)
+    container.addEventListener('touchend', (e) => {
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTap;
+      
+      if (tapLength < 300 && tapLength > 0 && e.touches.length === 0) {
+        if (scale > 1) {
+          scale = 1;
+          pointX = 0;
+          pointY = 0;
+        } else {
+          scale = 2.5;
+        }
+        updateTransform();
+      }
+      lastTap = currentTime;
     });
   </script>
 
