@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Sơ đồ trường</title>
   <style>
     * {
@@ -101,6 +101,9 @@
     const container = document.getElementById('mapContainer');
     const img = document.getElementById('mapImg');
 
+    // MỨC PHÓNG TO TỐI ĐA (Bạn có thể đổi số 10 thành 8, 12, 15...)
+    const MAX_SCALE = 10;
+
     let scale = 1;
     let pointX = 0;
     let pointY = 0;
@@ -128,8 +131,8 @@
     // Lăn chuột để Zoom In / Zoom Out
     container.addEventListener('wheel', (e) => {
       e.preventDefault();
-      const zoomFactor = e.deltaY < 0 ? 0.25 : -0.25;
-      const newScale = Math.min(Math.max(1, scale + zoomFactor), 4);
+      const zoomFactor = e.deltaY < 0 ? 0.35 : -0.35;
+      const newScale = Math.min(Math.max(1, scale + zoomFactor), MAX_SCALE);
 
       if (newScale !== scale) {
         scale = newScale;
@@ -209,7 +212,7 @@
         );
         
         if (initialDistance > 0) {
-          scale = Math.min(Math.max(1, initialScale * (currentDistance / initialDistance)), 4);
+          scale = Math.min(Math.max(1, initialScale * (currentDistance / initialDistance)), MAX_SCALE);
           if (scale === 1) {
             pointX = 0;
             pointY = 0;
@@ -240,7 +243,7 @@
             pointX = 0;
             pointY = 0;
           } else {
-            scale = 2.5;
+            scale = 3; // Mức zoom khi chạm 2 lần
           }
           updateTransform();
         }
