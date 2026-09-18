@@ -105,15 +105,17 @@
     let pointX = 0;
     let pointY = 0;
     
-    // Biến quản lý trạng thái chuột
+    // Biến quản lý trạng thái chuột (Desktop)
     let isMouseDown = false;
     let startX = 0;
     let startY = 0;
 
-    // Biến quản lý cảm ứng di động
+    // Biến quản lý cảm ứng (Mobile)
     let initialDistance = 0;
     let initialScale = 1;
     let lastTap = 0;
+    let isMultiTouch = false;
+    let touchMoved = false;
 
     function updateTransform() {
       img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
@@ -177,8 +179,10 @@
         // 1 ngón tay: Kéo di chuyển
         startX = e.touches[0].clientX - pointX;
         startY = e.touches[0].clientY - pointY;
-      } else if (e.touches.length === 2) {
-        // 2 ngón tay: Phóng to / Thu nhỏ (Pinch)
+        touchMoved = false;
+      } else if (e.touches.length >= 2) {
+        // Đánh dấu đang thực hiện thao tác đa điểm (pinch zoom)
+        isMultiTouch = true;
         e.preventDefault();
         initialDistance = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
@@ -189,8 +193,9 @@
     }, { passive: false });
 
     container.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1 && scale > 1) {
-        // Kéo di chuyển bản đồ khi đang zoom
+      touchMoved = true;
+      if (e.touches.length === 1 && scale > 1 && !isMultiTouch) {
+        // Kéo di chuyển bản đồ khi đang zoom (chỉ nhận khi không phải vừa pinch xong)
         e.preventDefault();
         pointX = e.touches[0].clientX - startX;
         pointY = e.touches[0].clientY - startY;
@@ -214,22 +219,33 @@
       }
     }, { passive: false });
 
-    // Double Tap (Chạm 2 lần nhanh để bật/tắt zoom)
+    // Xử lý khi ngón tay nhấc khỏi màn hình
     container.addEventListener('touchend', (e) => {
-      const currentTime = new Date().getTime();
-      const tapLength = currentTime - lastTap;
-      
-      if (tapLength < 300 && tapLength > 0 && e.touches.length === 0) {
-        if (scale > 1) {
-          scale = 1;
-          pointX = 0;
-          pointY = 0;
-        } else {
-          scale = 2.5;
+      // Khi tất cả các ngón tay đã rời khỏi màn hình
+      if (e.touches.length === 0) {
+        if (isMultiTouch) {
+          // Bỏ qua logic double-tap nếu vừa thực hiện thao tác pinch 2 ngón
+          isMultiTouch = false;
+          lastTap = 0;
+          return;
         }
-        updateTransform();
+
+        // Chỉ tính Double Tap khi chạm 1 ngón và không thực hiện kéo rê màn hình
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        
+        if (tapLength < 300 && tapLength > 0 && !touchMoved) {
+          if (scale > 1) {
+            scale = 1;
+            pointX = 0;
+            pointY = 0;
+          } else {
+            scale = 2.5;
+          }
+          updateTransform();
+        }
+        lastTap = currentTime;
       }
-      lastTap = currentTime;
     });
 
     // Vô hiệu hóa sự kiện kéo ảnh mặc định của trình duyệt
