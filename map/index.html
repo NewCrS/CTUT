@@ -20,7 +20,7 @@
       height: 100vh;
     }
 
-    
+    /* Nút quay lại hoàn toàn trong suốt */
     .back-btn {
       position: fixed;
       top: 16px;
@@ -33,7 +33,7 @@
       height: 44px;
       background: transparent;
       border: none;
-      color: #FFFFFF;
+      color: #1a1a1a;
       text-decoration: none;
       transition: transform 0.1s ease, opacity 0.2s ease;
       cursor: pointer;
@@ -52,7 +52,7 @@
       stroke-width: 3;
       stroke-linecap: round;
       stroke-linejoin: round;
-      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.25));
+      filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.25));
     }
 
     .map-container {
@@ -101,7 +101,7 @@
     const container = document.getElementById('mapContainer');
     const img = document.getElementById('mapImg');
 
-    // MỨC PHÓNG TO TỐI ĐA (Bạn có thể đổi số 10 thành 8, 12, 15...)
+    // MỨC PHÓNG TO TỐI ĐA (Có thể chỉnh tùy ý)
     const MAX_SCALE = 10;
 
     let scale = 1;
@@ -128,13 +128,23 @@
     // 1. XỬ LÝ SỰ KIỆN CHUỘT (DESKTOP)
     // ==========================================
 
-    // Lăn chuột để Zoom In / Zoom Out
+    // Lăn chuột để Zoom tại vị trí con trỏ chuột
     container.addEventListener('wheel', (e) => {
       e.preventDefault();
       const zoomFactor = e.deltaY < 0 ? 0.35 : -0.35;
       const newScale = Math.min(Math.max(1, scale + zoomFactor), MAX_SCALE);
 
       if (newScale !== scale) {
+        const rect = container.getBoundingClientRect();
+        // Tọa độ chuột so với tâm container
+        const mouseX = e.clientX - (rect.left + rect.width / 2);
+        const mouseY = e.clientY - (rect.top + rect.height / 2);
+
+        // Tính toán dịch chuyển tâm zoom về vị trí con trỏ chuột
+        const ratio = newScale / scale;
+        pointX = mouseX - (mouseX - pointX) * ratio;
+        pointY = mouseY - (mouseY - pointY) * ratio;
+
         scale = newScale;
         if (scale === 1) {
           pointX = 0;
@@ -204,7 +214,7 @@
         pointY = e.touches[0].clientY - startY;
         updateTransform();
       } else if (e.touches.length === 2) {
-        // Tính toán zoom 2 ngón
+        // Zoom 2 ngón tay tại trung điểm 2 ngón
         e.preventDefault();
         const currentDistance = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
@@ -212,12 +222,26 @@
         );
         
         if (initialDistance > 0) {
-          scale = Math.min(Math.max(1, initialScale * (currentDistance / initialDistance)), MAX_SCALE);
-          if (scale === 1) {
-            pointX = 0;
-            pointY = 0;
+          const newScale = Math.min(Math.max(1, initialScale * (currentDistance / initialDistance)), MAX_SCALE);
+          
+          if (newScale !== scale) {
+            const rect = container.getBoundingClientRect();
+            // Trung điểm giữa 2 ngón tay so với tâm container
+            const touchX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - (rect.left + rect.width / 2);
+            const touchY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - (rect.top + rect.height / 2);
+
+            // Bù trừ tọa độ dịch chuyển theo trung điểm 2 ngón tay
+            const ratio = newScale / scale;
+            pointX = touchX - (touchX - pointX) * ratio;
+            pointY = touchY - (touchY - pointY) * ratio;
+
+            scale = newScale;
+            if (scale === 1) {
+              pointX = 0;
+              pointY = 0;
+            }
+            updateTransform();
           }
-          updateTransform();
         }
       }
     }, { passive: false });
@@ -243,7 +267,15 @@
             pointX = 0;
             pointY = 0;
           } else {
-            scale = 3; // Mức zoom khi chạm 2 lần
+            const rect = container.getBoundingClientRect();
+            const tapX = e.changedTouches[0].clientX - (rect.left + rect.width / 2);
+            const tapY = e.changedTouches[0].clientY - (rect.top + rect.height / 2);
+            
+            const newScale = 3;
+            const ratio = newScale / scale;
+            pointX = tapX - (tapX - pointX) * ratio;
+            pointY = tapY - (tapY - pointY) * ratio;
+            scale = newScale;
           }
           updateTransform();
         }
