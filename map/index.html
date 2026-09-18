@@ -11,7 +11,7 @@
     /* -==--==--==--==--==--==--==- */
     /* This code was made by Gemini */
     /* -==--==--==--==--==--==--==- */
-    
+
     * {
       margin: 0;
       padding: 0;
@@ -27,7 +27,6 @@
       height: 100vh;
     }
 
-    /* Nút quay lại hoàn toàn trong suốt */
     .back-btn {
       position: fixed;
       top: 16px;
@@ -70,7 +69,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      touch-action: none; /* Vô hiệu hóa cuộn mặc định của trình duyệt di động */
+      touch-action: none; 
       cursor: default;
     }
 
@@ -83,7 +82,7 @@
       transition: transform 0.05s ease-out;
       will-change: transform;
       
-      /* Chặn tuyệt đối hành vi chọn và kéo ảnh mặc định của trình duyệt */
+      /* Chặn hành vi chọn và kéo ảnh của trình duyệt */
       user-select: none;
       -webkit-user-select: none;
       -webkit-user-drag: none;
@@ -93,7 +92,7 @@
 </head>
 <body>
 
-  <!-- Nút quay lại chỉ chứa mũi tên < trong suốt -->
+  <!-- Nút quay lại -->
   <a href="../" class="back-btn" aria-label="Quay lại">
     <svg viewBox="0 0 24 24">
       <polyline points="15 18 9 12 15 6"></polyline>
@@ -108,7 +107,7 @@
     const container = document.getElementById('mapContainer');
     const img = document.getElementById('mapImg');
 
-    // MỨC PHÓNG TO TỐI ĐA (Có thể chỉnh tùy ý)
+    // MỨC PHÓNG TO (Có thể chỉnh tùy ý)
     const MAX_SCALE = 10;
 
     let scale = 1;
@@ -250,7 +249,6 @@
             const ratio = newScale / scale;
             pointX = touchX - (touchX - pointX) * ratio;
             pointY = touchY - (touchY - pointY) * ratio;
-
             scale = newScale;
             if (scale === 1) {
               pointX = 0;
@@ -302,6 +300,5 @@
     // Vô hiệu hóa sự kiện kéo ảnh mặc định của trình duyệt
     img.addEventListener('dragstart', (e) => e.preventDefault());
   </script>
-
 </body>
 </html>
