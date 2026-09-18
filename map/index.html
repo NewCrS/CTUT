@@ -36,6 +36,7 @@
       color: #1a1a1a;
       text-decoration: none;
       transition: transform 0.1s ease, opacity 0.2s ease;
+      cursor: pointer;
     }
 
     .back-btn:active {
@@ -62,7 +63,8 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      touch-action: none; /* Tránh xung đột cuộn trang mặc định của trình duyệt */
+      touch-action: none; /* Vô hiệu hóa cuộn mặc định của trình duyệt di động */
+      cursor: default;
     }
 
     .map-container img {
@@ -73,6 +75,12 @@
       transform-origin: center center;
       transition: transform 0.05s ease-out;
       will-change: transform;
+      
+      /* Chặn tuyệt đối hành vi chọn và kéo ảnh mặc định của trình duyệt */
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: auto;
     }
   </style>
 </head>
@@ -86,7 +94,7 @@
   </a>
   
   <div class="map-container" id="mapContainer">
-    <img src="../assets/map/map.png" alt="Sơ đồ trường" id="mapImg">
+    <img src="../assets/map/map.png" alt="Sơ đồ trường" id="mapImg" draggable="false">
   </div>
 
   <script>
@@ -96,8 +104,13 @@
     let scale = 1;
     let pointX = 0;
     let pointY = 0;
+    
+    // Biến quản lý trạng thái chuột
+    let isMouseDown = false;
     let startX = 0;
     let startY = 0;
+
+    // Biến quản lý cảm ứng di động
     let initialDistance = 0;
     let initialScale = 1;
     let lastTap = 0;
@@ -106,49 +119,102 @@
       img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
     }
 
-    // Xử lý sự kiện bắt đầu chạm
+    // ==========================================
+    // 1. XỬ LÝ SỰ KIỆN CHUỘT (DESKTOP)
+    // ==========================================
+
+    // Lăn chuột để Zoom In / Zoom Out
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 0.25 : -0.25;
+      const newScale = Math.min(Math.max(1, scale + zoomFactor), 4);
+
+      if (newScale !== scale) {
+        scale = newScale;
+        if (scale === 1) {
+          pointX = 0;
+          pointY = 0;
+        }
+        container.style.cursor = scale > 1 ? 'grab' : 'default';
+        updateTransform();
+      }
+    }, { passive: false });
+
+    // Nhấn giữ chuột để bắt đầu kéo
+    container.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return; // Chỉ nhận chuột trái
+      if (scale > 1) {
+        isMouseDown = true;
+        startX = e.clientX - pointX;
+        startY = e.clientY - pointY;
+        container.style.cursor = 'grabbing';
+      }
+    });
+
+    // Di chuyển chuột khi đang nhấn giữ
+    window.addEventListener('mousemove', (e) => {
+      if (!isMouseDown) return;
+      e.preventDefault();
+      pointX = e.clientX - startX;
+      pointY = e.clientY - startY;
+      updateTransform();
+    });
+
+    // Thả chuột
+    window.addEventListener('mouseup', () => {
+      if (isMouseDown) {
+        isMouseDown = false;
+        container.style.cursor = scale > 1 ? 'grab' : 'default';
+      }
+    });
+
+    // ==========================================
+    // 2. XỬ LÝ SỰ KIỆN CẢM ỨNG (MOBILE)
+    // ==========================================
+
     container.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
-        // Kéo di chuyển ảnh (Pan)
+        // 1 ngón tay: Kéo di chuyển
         startX = e.touches[0].clientX - pointX;
         startY = e.touches[0].clientY - pointY;
       } else if (e.touches.length === 2) {
-        // Phóng to/thu nhỏ bằng 2 ngón tay (Pinch)
+        // 2 ngón tay: Phóng to / Thu nhỏ (Pinch)
+        e.preventDefault();
         initialDistance = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
           e.touches[0].clientY - e.touches[1].clientY
         );
         initialScale = scale;
       }
-    });
+    }, { passive: false });
 
-    // Xử lý sự kiện di chuyển ngón tay
     container.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-
       if (e.touches.length === 1 && scale > 1) {
-        // Di chuyển ảnh khi đang zoom
+        // Kéo di chuyển bản đồ khi đang zoom
+        e.preventDefault();
         pointX = e.touches[0].clientX - startX;
         pointY = e.touches[0].clientY - startY;
         updateTransform();
       } else if (e.touches.length === 2) {
-        // Phóng to / Thu nhỏ
+        // Tính toán zoom 2 ngón
+        e.preventDefault();
         const currentDistance = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
           e.touches[0].clientY - e.touches[1].clientY
         );
         
-        scale = Math.min(Math.max(1, initialScale * (currentDistance / initialDistance)), 4);
-        
-        if (scale === 1) {
-          pointX = 0;
-          pointY = 0;
+        if (initialDistance > 0) {
+          scale = Math.min(Math.max(1, initialScale * (currentDistance / initialDistance)), 4);
+          if (scale === 1) {
+            pointX = 0;
+            pointY = 0;
+          }
+          updateTransform();
         }
-        updateTransform();
       }
     }, { passive: false });
 
-    // Xử lý Double Tap (Chạm 2 lần liên tiếp để zoom nhanh)
+    // Double Tap (Chạm 2 lần nhanh để bật/tắt zoom)
     container.addEventListener('touchend', (e) => {
       const currentTime = new Date().getTime();
       const tapLength = currentTime - lastTap;
@@ -165,6 +231,9 @@
       }
       lastTap = currentTime;
     });
+
+    // Vô hiệu hóa sự kiện kéo ảnh mặc định của trình duyệt
+    img.addEventListener('dragstart', (e) => e.preventDefault());
   </script>
 
 </body>
