@@ -53,8 +53,8 @@ document.addEventListener('mousemove', (e) => {
     const power = (1 - distance / triggerRadius);
 
     // Tính độ lệch X và Y để đẩy box né ra xa khỏi tâm vùng ảo theo hướng ngược lại với chuột
-    const pushX = -(deltaX / distance) * maxPush * power;
-    const pushY = -(deltaY / distance) * maxPush * power;
+    const pushX = (deltaX / distance) * maxPush * power;
+    const pushY = (deltaY / distance) * maxPush * power;
 
     // Áp dụng vị trí né tương đối so với vị trí gốc
     box.style.transform = `translate(${pushX}px, ${pushY}px)`;
