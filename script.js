@@ -1,14 +1,11 @@
 // Lấy phần tử HTML có id="evade" và lưu vào biến box để thao tác
 const box = document.getElementById('evade');
 
-// Khai báo khoảng cách (tính bằng pixel) mà box sẽ né đi mỗi khi con trỏ chuột chạm vào
-const pushDistance = 200;
+// Khai báo biên độ né nhẹ quanh vị trí gốc (tính bằng pixel)
+const pushDistance = 20;
 
-// Lắng nghe sự kiện "mouseover" (xảy ra ngay khi con trỏ chuột chạm vào ranh giới của box)
+// Lắng nghe sự kiện "mouseover" (xảy ra khi con trỏ chuột chạm vào box)
 box.addEventListener('mouseover', (e) => {
-  
-
-  box.style.position = 'fixed';  
   // Lấy các thông số về vị trí (top, left) và kích thước (width, height) thực tế của box trên màn hình
   const rect = box.getBoundingClientRect();
   
@@ -34,30 +31,16 @@ box.addEventListener('mouseover', (e) => {
   // Nếu chuột nằm phía dưới tâm box (mouseY >= boxCenterY) -> dirY = -1 (đẩy box lên trên)
   const dirY = mouseY < boxCenterY ? 1 : -1;
 
-  // Tính vị trí lề trái MỚI cho box = lề trái cũ + (hướng né X * khoảng cách né)
-  let newLeft = rect.left + dirX * pushDistance;
-  
-  // Tính vị trí lề trên MỚI cho box = lề trên cũ + (hướng né Y * khoảng cách né)
-  let newTop = rect.top + dirY * pushDistance;
+  // Tính khoảng cách dịch chuyển tương đối theo X và Y
+  const offsetX = dirX * pushDistance;
+  const offsetY = dirY * pushDistance;
 
-  // Tính giới hạn lề trái tối đa (chiều rộng màn hình trừ đi chiều rộng box) để không bị văng ra ngoài mép phải
-  const maxLeft = window.innerWidth - rect.width;
-  
-  // Tính giới hạn lề trên tối đa (chiều cao màn hình trừ đi chiều cao box) để không bị văng ra ngoài mép dưới
-  const maxTop = window.innerHeight - rect.height;
+  // Áp dụng dịch chuyển bằng transform tương đối so với điểm gốc
+  box.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+});
 
-  // Giữ cho tọa độ newLeft luôn nằm trong phạm vi từ 0px (mép trái) đến maxLeft (mép phải)
-  newLeft = Math.max(0, Math.min(newLeft, maxLeft));
-  
-  // Giữ cho tọa độ newTop luôn nằm trong phạm vi từ 0px (mép trên) đến maxTop (mép dưới)
-  newTop = Math.max(0, Math.min(newTop, maxTop));
-
-  // Gỡ bỏ thuộc tính căn giữa ban đầu (transform: translate(-50%, -50%)) trong CSS để vị trí tính theo left/top chuẩn xác
-  box.style.transform = 'none';
-
-  // Cập nhật thuộc tính CSS 'left' bằng giá trị newLeft mới vừa tính toán (thêm đơn vị 'px')
-  box.style.left = `${newLeft}px`;
-  
-  // Cập nhật thuộc tính CSS 'top' bằng giá trị newTop mới vừa tính toán (thêm đơn vị 'px')
-  box.style.top = `${newTop}px`;
+// Lắng nghe sự kiện "mouseleave" (khi con trỏ chuột rời khỏi khu vực của box)
+box.addEventListener('mouseleave', () => {
+  // Đưa khối box trở lại vị trí cố định ban đầu
+  box.style.transform = 'translate(0px, 0px)';
 });
