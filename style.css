@@ -30,6 +30,7 @@ body {
   border: 2px solid #ffffff;                 /* Tạo viền trắng xung quanh rộng 2px */
   border-radius: 8px;                        /* Bo tròn 4 góc 8px */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Tạo bóng đổ mờ phía dưới khối (độ lệch Y: 4px, độ mờ: 10px, độ đậm: 5%) */
+  transition: all 0.25s ease-out;             /* Tạo chuyển động mượt */
 }
 
 /* Định dạng cho thẻ tự đặt tên <box> */
