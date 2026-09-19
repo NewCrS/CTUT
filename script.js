@@ -5,7 +5,7 @@ const box = document.getElementById('evade');
 const triggerRadius = 120;
 
 // Độ lệch né tối đa (pixel) khi chuột tiến sát vào chính tâm vùng ảo
-const maxPush = 40;
+const maxPush = 8;
 
 // Khai báo biến lưu trữ tọa độ điểm TÂM CỐ ĐỊNH (vùng ảo gốc) của box
 let originX = 0;
