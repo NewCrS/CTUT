@@ -1,46 +1,65 @@
 // Lấy phần tử HTML có id="evade" và lưu vào biến box để thao tác
 const box = document.getElementById('evade');
 
-// Khai báo biên độ né nhẹ quanh vị trí gốc (tính bằng pixel)
-const pushDistance = 20;
+// Bán kính kích hoạt của vùng ảo cố định (pixel): Chuột tiến vào vùng này box mới bắt đầu né
+const triggerRadius = 120;
 
-// Lắng nghe sự kiện "mouseover" (xảy ra khi con trỏ chuột chạm vào box)
-box.addEventListener('mouseover', (e) => {
-  // Lấy các thông số về vị trí (top, left) và kích thước (width, height) thực tế của box trên màn hình
+// Độ lệch né tối đa (pixel) khi chuột tiến sát vào chính tâm vùng ảo
+const maxPush = 40;
+
+// Khai báo biến lưu trữ tọa độ điểm TÂM CỐ ĐỊNH (vùng ảo gốc) của box
+let originX = 0;
+let originY = 0;
+
+// Hàm tính toán và cập nhật tọa độ tâm gốc của box theo vị trí hiển thị ban đầu trên trang
+function updateOriginalCenter() {
+  // Tạm thời bỏ transform để đo vị trí thực tế chuẩn xác tuyệt đối trong luồng giao diện
+  const currentTransform = box.style.transform;
+  box.style.transform = 'none';
+
+  // Lấy các thông số vị trí và kích thước gốc của box
   const rect = box.getBoundingClientRect();
   
-  // Tính tọa độ điểm TÂM của box theo chiều ngang (X): Lề trái + (Chiều rộng / 2)
-  const boxCenterX = rect.left + rect.width / 2;
-  
-  // Tính tọa độ điểm TÂM của box theo chiều dọc (Y): Lề trên + (Chiều cao / 2)
-  const boxCenterY = rect.top + rect.height / 2;
+  // Tính tọa độ tâm cố định (X, Y) của vùng ảo
+  originX = rect.left + rect.width / 2;
+  originY = rect.top + rect.height / 2;
 
-  // Lấy tọa độ vị trí hiện tại của con trỏ chuột theo chiều ngang (X)
+  // Khôi phục lại trạng thái transform trước đó
+  box.style.transform = currentTransform;
+}
+
+// Gọi hàm khởi tạo ngay khi tải trang để xác định vùng ảo gốc
+updateOriginalCenter();
+
+// Cập nhật lại tâm vùng ảo nếu người dùng co giãn hoặc thay đổi kích thước cửa sổ trình duyệt
+window.addEventListener('resize', updateOriginalCenter);
+
+// Lắng hệ di chuyển chuột trên TOÀN TRANG để so sánh với VÙNG ẢO CỐ ĐỊNH
+document.addEventListener('mousemove', (e) => {
+  // Lấy tọa độ hiện tại của con trỏ chuột
   const mouseX = e.clientX;
-  
-  // Lấy tọa độ vị trí hiện tại của con trỏ chuột theo chiều dọc (Y)
   const mouseY = e.clientY;
 
-  // Kiểm tra vị trí chuột so với tâm box theo trục ngang (X):
-  // Nếu chuột nằm bên trái tâm box (mouseX < boxCenterX) -> dirX = 1 (đẩy box sang phải)
-  // Nếu chuột nằm bên phải tâm box (mouseX >= boxCenterX) -> dirX = -1 (đẩy box sang trái)
-  const dirX = mouseX < boxCenterX ? 1 : -1;
+  // Tính khoảng cách từ chuột tới TÂM GỐC CỐ ĐỊNH (vùng ảo) theo 2 trục X và Y
+  const deltaX = mouseX - originX;
+  const deltaY = mouseY - originY;
 
-  // Kiểm tra vị trí chuột so với tâm box theo trục dọc (Y):
-  // Nếu chuột nằm phía trên tâm box (mouseY < boxCenterY) -> dirY = 1 (đẩy box xuống dưới)
-  // Nếu chuột nằm phía dưới tâm box (mouseY >= boxCenterY) -> dirY = -1 (đẩy box lên trên)
-  const dirY = mouseY < boxCenterY ? 1 : -1;
+  // Tính khoảng cách đường chéo thực tế từ chuột đến tâm vùng ảo bằng định lý Pythagoras
+  const distance = Math.hypot(deltaX, deltaY);
 
-  // Tính khoảng cách dịch chuyển tương đối theo X và Y
-  const offsetX = dirX * pushDistance;
-  const offsetY = dirY * pushDistance;
+  // Kiểm tra xem chuột có nằm trong vùng ảo kích hoạt (triggerRadius) hay không
+  if (distance < triggerRadius && distance > 0) {
+    // Tỷ lệ lực đẩy: Chuột càng tiến gần tâm vùng ảo gốc, lực đẩy né càng mạnh (giá trị từ 0 đến 1)
+    const power = (1 - distance / triggerRadius);
 
-  // Áp dụng dịch chuyển bằng transform tương đối so với điểm gốc
-  box.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-});
+    // Tính độ lệch X và Y để đẩy box né ra xa khỏi tâm vùng ảo theo hướng ngược lại với chuột
+    const pushX = -(deltaX / distance) * maxPush * power;
+    const pushY = -(deltaY / distance) * maxPush * power;
 
-// Lắng nghe sự kiện "mouseleave" (khi con trỏ chuột rời khỏi khu vực của box)
-box.addEventListener('mouseleave', () => {
-  // Đưa khối box trở lại vị trí cố định ban đầu
-  box.style.transform = 'translate(0px, 0px)';
+    // Áp dụng vị trí né tương đối so với vị trí gốc
+    box.style.transform = `translate(${pushX}px, ${pushY}px)`;
+  } else {
+    // Nếu chuột ra khỏi vùng ảo cố định, trả box về lại vị trí gốc ban đầu (0px, 0px)
+    box.style.transform = 'translate(0px, 0px)';
+  }
 });
