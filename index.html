@@ -1,36 +1,85 @@
+<!-- Khai báo chuẩn HTML5 để trình duyệt nhận biết và hiển thị trang web đúng cách -->
 <!DOCTYPE html>
+
+<!-- Thẻ gốc bao bọc toàn bộ trang web, thuộc tính lang="vi" khai báo ngôn ngữ chính là tiếng Việt -->
 <html lang="vi">
+
+<!-- Phần chứa các thông tin cấu hình, cài đặt nền và liên kết tài nguyên (không hiển thị trực tiếp lên màn hình) -->
 <head>
+  
+  <!-- Khai báo bảng mã ký tự UTF-8 giúp trang web hiển thị chuẩn tiếng Việt có dấu mà không bị lỗi font -->
   <meta charset="UTF-8">
+  
+  <!-- Cấu hình Responsive: giúp giao diện tự động co giãn vừa vặn với kích thước màn hình thiết bị (điện thoại, máy tính) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Tiêu đề của trang web, dòng chữ này hiển thị trên thẻ (tab) của trình duyệt -->
   <title>UniCheck</title>
   
   <!-- Font chữ Comfortaa -->
+  <!-- Tối ưu tốc độ: Yêu cầu trình duyệt kết nối sớm tới máy chủ Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  
+  <!-- Tối ưu tốc độ: Kết nối sớm tới máy chủ chứa file font tĩnh của Google và cấp quyền truy cập crossorigin -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Tải font Comfortaa từ Google Fonts về máy với 2 độ dày chữ: 400 (chữ thường) và 700 (chữ in đậm) -->
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
   
   <!-- File CSS -->
+  <!-- Nhúng file trang trí giao diện bên ngoài (style.css) để chỉnh màu sắc, kích thước, khoảng cách cho trang -->
   <link rel="stylesheet" href="style.css">
+
+<!-- Đóng phần cấu hình head -->
 </head>
+
+<!-- Phần thân trang web, chứa toàn bộ các thành phần hiển thị trực quan mà người dùng nhìn thấy -->
 <body>
 
+  <!-- Thẻ div đóng vai trò là khung chứa chính bao bọc toàn bộ nội dung, gắn class="content" để chỉnh CSS chung -->
   <div class="content">
 
+    <!-- Khối div gom nhóm phần thương hiệu/logo, gắn class="logo-box" -->
     <div class="logo-box">
+      
+      <!-- Thẻ tùy chỉnh <box> dùng làm khung chứa bên trong (Lưu ý: đây là thẻ tự tạo, không phải thẻ chuẩn HTML5) -->
       <box>
+        
+        <!-- Thẻ span chứa tên thương hiệu chính, gắn class="brand-name" để chỉnh kiểu chữ lớn/nổi bật trong CSS -->
         <span class="brand-name">CTUT - UniCheck</span>
+        
+        <!-- Thẻ span chứa dòng mô tả phụ bên dưới, gắn class="tagline" để chỉnh chữ nhỏ hơn hoặc màu mờ hơn -->
         <span class="tagline">for students</span>
+      
+      <!-- Đóng thẻ tùy chỉnh <box> của logo -->
       </box>
+    
+    <!-- Đóng khối div logo-box -->
     </div>
+    
+      <!-- Khối div gom nhóm danh sách chức năng/tiện ích, gắn class="list-box" -->
       <div class="list-box">
+        
+        <!-- Thẻ tùy chỉnh <box> dùng làm khung chứa bên trong khối danh sách -->
         <box>
+            
+            <!-- Thẻ span hiển thị tên nhãn mục "Trường học", gắn class="list-name" để định dạng văn bản -->
             <span class="list-name">Trường học</span>
+            
+            <!-- Thẻ liên kết <a> dùng để chuyển hướng sang thư mục "./map/" khi bấm vào, gắn class="list-btn" để CSS thành nút bấm -->
             <a href="./map/" class="list-btn">Sơ đồ trường</a>
+        
+        <!-- Đóng thẻ tùy chỉnh <box> của danh sách -->
         </box>
+      
+      <!-- Đóng khối div list-box -->
       </div>
+  
+  <!-- Đóng khối div khung chứa chính (content) -->
   </div>
 
-
+<!-- Đóng phần thân trang web -->
 </body>
+
+<!-- Đóng thẻ gốc html, kết thúc tài liệu web -->
 </html>

@@ -1,92 +1,112 @@
+/* Chọn tất cả các phần tử trên trang web (*) để thiết lập lại các quy tắc mặc định */
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  box-sizing: border-box; /* Bắt buộc padding và border nằm bên trong kích thước (width/height) của phần tử */
+  margin: 0;              /* Xóa khoảng cách lề ngoài mặc định của tất cả thẻ */
+  padding: 0;             /* Xóa khoảng cách lề trong mặc định của tất cả thẻ */
 }
 
+/* Định dạng cho toàn bộ phần thân trang web */
 body {
-  font-family: 'Comfortaa', cursive, sans-serif;
-  background-color: #f3f6f9;
-  padding: 40px 20px;
+  font-family: 'Comfortaa', cursive, sans-serif; /* Đặt font chữ ưu tiên là Comfortaa, nếu máy không có sẽ dùng kiểu cursive hoặc sans-serif */
+  background-color: #f3f6f9;                    /* Thiết lập màu nền xám nhạt cho toàn bộ trang */
+  padding: 40px 20px;                           /* Khoảng cách lề trong: trên-dưới 40px, trái-phải 20px */
 }
 
-
+/* Khung chứa chính (container) bao bọc toàn bộ giao diện */
 .content {
-  display: flex;
-  flex-direction: column; 
-  align-items: center; 
-  gap: 20px;             
-  width: 100%;
-  max-width: 1000px; 
-  margin: 0 auto;
+  display: flex;             /* Dùng mô hình dàn trang Flexbox */
+  flex-direction: column;    /* Sắp xếp các phần tử con theo chiều dọc (từ trên xuống) */
+  align-items: center;       /* Căn giữa các phần tử con theo trục ngang */
+  gap: 20px;                 /* Tạo khoảng cách tự động giữa các khối con là 20px */
+  width: 100%;               /* Chiều rộng chiếm 100% khung chứa cha */
+  max-width: 1000px;         /* Chiều rộng tối đa không vượt quá 1000px (giúp giao diện không bị xé quá to trên máy tính) */
+  margin: 0 auto;            /* Căn giữa toàn bộ khối .content ra chính giữa màn hình */
 }
 
+/* Khối bao bọc khu vực logo */
 .logo-box {
-  background-color: #ffffff;
-  padding: 10px 15px;
-  border: 2px solid #ffffff;
-  border-radius: 8px;       
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); 
-}
-box {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-.brand-name {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  line-height: 1.2;
-}
-.tagline {
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: #007bff;
-  margin-top: 2px;
-  margin-left: 20px;
+  background-color: #ffffff;                 /* Màu nền trắng */
+  padding: 10px 15px;                        /* Khoảng cách lề trong: trên-dưới 10px, trái-phải 15px */
+  border: 2px solid #ffffff;                 /* Tạo viền trắng xung quanh rộng 2px */
+  border-radius: 8px;                        /* Bo tròn 4 góc 8px */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Tạo bóng đổ mờ phía dưới khối (độ lệch Y: 4px, độ mờ: 10px, độ đậm: 5%) */
 }
 
+/* Định dạng cho thẻ tự đặt tên <box> */
+box {
+  display: flex;             /* Sử dụng dàn trang Flexbox cho khối box */
+  flex-direction: column;    /* Sắp xếp các phần tử con bên trong theo chiều dọc */
+  align-items: flex-start;   /* Căn các phần tử con dạt về bên trái */
+}
+
+/* Tên thương hiệu chính (chữ lớn) */
+.brand-name {
+  font-size: 1.6rem;         /* Cỡ chữ 1.6rem (bằng 1.6 x cỡ chữ mặc định, khoảng 25.6px) */
+  font-weight: 700;          /* Độ đậm chữ: 700 (In đậm - Bold) */
+  color: #1a1a1a;            /* Màu chữ xám đen */
+  line-height: 1.2;          /* Chiều cao của dòng chữ (khoảng cách giữa các dòng) */
+}
+
+/* Khẩu hiệu/mô tả nhỏ bên dưới logo */
+.tagline {
+  font-size: 0.75rem;        /* Cỡ chữ nhỏ 0.75rem (12px) */
+  font-weight: 400;          /* Độ đậm chữ: 400 (Chữ thường - Normal) */
+  color: #007bff;            /* Màu chữ xanh dương */
+  margin-top: 2px;           /* Đẩy khoảng cách phía trên xuống 2px */
+  margin-left: 20px;         /* Đẩy lề trái lùi vào 20px */
+}
+
+/* Khối bao bọc khu vực danh sách */
 .list-box {
-  background-color: #ffffff;
-  padding: 15px 20px;
-  border: 2px solid #ffffff;
-  border-radius: 8px;       
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); 
-  width: 100%;     
-  align-self: stretch;  
+  background-color: #ffffff;                 /* Màu nền trắng */
+  padding: 15px 20px;                        /* Khoảng cách lề trong: trên-dưới 15px, trái-phải 20px */
+  border: 2px solid #ffffff;                 /* Viền màu trắng rộng 2px */
+  border-radius: 8px;                        /* Bo tròn 4 góc 8px */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Bóng đổ mờ phía dưới */
+  width: 100%;                               /* Chiều rộng chiếm 100% phần tử cha */
+  align-self: stretch;                       /* Tự động kéo giãn chiều rộng bằng đúng với kích thước vùng chứa cha trong Flexbox */
 }
+
+/* Tiêu đề mục danh sách */
 .list-name {
-  font-size: 1.6rem;
-  font-weight: 400;
-  color: #1a1a1a;
-  line-height: 1.2;
+  font-size: 1.6rem;         /* Cỡ chữ 1.6rem */
+  font-weight: 400;          /* Chữ thường (Normal) */
+  color: #1a1a1a;            /* Màu chữ xám đen */
+  line-height: 1.2;          /* Chiều cao dòng */
 }
+
+/* Nút chuyển hướng trong danh sách */
 .list-btn {
-  display: block;          /* Đổi thành block để nhận chiều rộng và căn giữa chuẩn */
-  width: 80%;              /* Chiếm 80% chiều ngang của list-box */
-  margin: 15px auto 0 auto;/* Cách trên 15px, tự động căn giữa ngang (auto) */
-  padding: 10px 16px;      
-  font-family: inherit;  
-  font-size: 0.85rem;      /* Tăng cỡ chữ nhẹ để vừa với nút to */
-  font-weight: 700;
-  color: #ffffff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;        
-  transition: all 0.2s ease;
-  text-align: center;      /* Căn giữa chữ bên trong nút */
+  display: block;            /* Chuyển thẻ thành dạng khối (block) để nhận chiều rộng width và thuộc tính margin auto */
+  width: 80%;                /* Chiều rộng nút chiếm 80% chiều ngang của khối .list-box */
+  margin: 15px auto 0 auto;  /* Lề ngoài: trên 15px, phải tự động, dưới 0, trái tự động (giúp căn giữa nút ngang) */
+  padding: 10px 16px;        /* Lề trong nút: trên-dưới 10px, trái-phải 16px */
+  font-family: inherit;      /* Kế thừa font chữ Comfortaa đã khai báo ở thẻ body */
+  font-size: 0.85rem;        /* Cỡ chữ trong nút */
+  font-weight: 700;          /* Độ đậm chữ: In đậm (Bold) */
+  color: #ffffff;            /* Màu chữ trắng */
+  background-color: #007bff; /* Màu nền nút xanh dương */
+  border: none;              /* Xóa đường viền mặc định của thẻ */
+  border-radius: 6px;        /* Bo tròn 4 góc nút 6px */
+  cursor: pointer;           /* Chuyển con trỏ chuột thành hình bàn tay khi trỏ vào nút */
+  transition: all 0.2s ease; /* Tạo hiệu ứng chuyển đổi mượt mà trong 0.2 giây khi hover/active */
+  text-align: center;        /* Căn chữ ra chính giữa nút */
 }
+
+/* Hiệu ứng khi rê chuột qua nút (Hover) */
 .list-btn:hover {
-  background-color: #0056b3;
-  transform: translateY(-1px);
+  background-color: #0056b3; /* Chuyển màu nền sang xanh dương đậm hơn */
+  transform: translateY(-1px);/* Nảy nhẹ nút lên trên 1px tạo cảm giác nổi */
 }
+
+/* Hiệu ứng khi bấm giữ chuột vào nút (Active) */
 .list-btn:active {
-  transform: translateY(0);
+  transform: translateY(0);  /* Hạ nút trở về vị trí ban đầu tạo hiệu ứng nhấn nút */
 }
+
+/* Định dạng cho tất cả thẻ liên kết <a> bên trong .list-box */
 .list-box a {
-  text-decoration: none;
-  display: block;
-  width: 100%;
+  text-decoration: none;     /* Bỏ gạch chân mặc định của thẻ liên kết <a> */
+  display: block;            /* Đổi thẻ <a> thành dạng khối */
+  width: 100%;               /* Chiều rộng chiếm 100% */
 }
