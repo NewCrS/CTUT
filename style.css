@@ -51,7 +51,7 @@ box {
 .tagline {
   font-size: 0.75rem;        /* Cỡ chữ nhỏ 0.75rem (12px) */
   font-weight: 400;          /* Độ đậm chữ: 400 (Chữ thường - Normal) */
-  color: #007bff;            /* Màu chữ xanh dương */
+  color: #0080ff;            /* Màu chữ xanh dương */
   margin-top: 2px;           /* Đẩy khoảng cách phía trên xuống 2px */
   margin-left: 20px;         /* Đẩy lề trái lùi vào 20px */
 }
@@ -85,7 +85,7 @@ box {
   font-size: 0.85rem;        /* Cỡ chữ trong nút */
   font-weight: 700;          /* Độ đậm chữ: In đậm (Bold) */
   color: #ffffff;            /* Màu chữ trắng */
-  background-color: #007bff; /* Màu nền nút xanh dương */
+  background-color: #00aaff; /* Màu nền nút xanh dương */
   border: none;              /* Xóa đường viền mặc định của thẻ */
   border-radius: 6px;        /* Bo tròn 4 góc nút 6px */
   cursor: pointer;           /* Chuyển con trỏ chuột thành hình bàn tay khi trỏ vào nút */
@@ -95,7 +95,7 @@ box {
 
 /* Hiệu ứng khi rê chuột qua nút (Hover) */
 .list-btn:hover {
-  background-color: #0056b3; /* Chuyển màu nền sang xanh dương đậm hơn */
+  background-color: #0090ee; /* Chuyển màu nền sang xanh dương đậm hơn */
   transform: translateY(-1px);/* Nảy nhẹ nút lên trên 1px tạo cảm giác nổi */
 }
 
