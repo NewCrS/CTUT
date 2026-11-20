@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tổng hợp kiến thức cốt lõi học phần AVCB1 - Ôn tập giữa kì</title>
+    <style>
+        :root {
+            --bg-page: #fafaf9;
+            --bg-card: #ffffff;
+            --text-primary: #1c1917;
+            --text-secondary: #57534e;
+            --text-muted: #78716c;
+            --border-color: #e7e5e4;
+            --green-primary: #15803d;
+            --green-hover: #166534;
+            --green-light: #f0fdf4;
+            --green-border: #bbf7d0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Thanh điều hướng giả lập cổng học liệu */
+        .top-navbar {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .breadcrumb {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        .breadcrumb span.domain {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .breadcrumb span.active-slug {
+            color: var(--green-primary);
+            font-weight: 500;
+        }
+
+        .doc-status {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: #f5f5f4;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        /* Container nội dung chính */
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+
+        /* Phần tiêu đề tài liệu */
+        .doc-header {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .course-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--green-primary);
+            background: var(--green-light);
+            border: 1px solid var(--green-border);
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+        }
+
+        .doc-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .doc-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        /* Nút chính màu xanh lá có điểm nhấn */
+        .cta-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .btn-focus {
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background-color: var(--green-primary);
+            color: #ffffff;
+            border: 1px solid #14532d;
+            border-radius: 10px;
+            padding: 14px 22px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            box-shadow: 0 4px 12px rgba(21, 128, 61, 0.22);
+        }
+
+        /* Hiệu ứng vệt sáng lướt nhẹ bên trong nút */
+        .btn-focus::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.28),
+                transparent
+            );
+            transform: skewX(-20deg);
+            animation: shimmerSweep 3.8s infinite;
+        }
+
+        @keyframes shimmerSweep {
+            0% { left: -120%; }
+            35% { left: 160%; }
+            100% { left: 160%; }
+        }
+
+        .btn-focus:hover {
+            background-color: var(--green-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(21, 128, 61, 0.3);
+        }
+
+        .btn-focus:active {
+            transform: translateY(0);
+        }
+
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.16);
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        /* Điểm nhấn huy hiệu nhỏ bên trong nút */
+        .btn-pill {
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 3px 9px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            letter-spacing: 0.02em;
+        }
+
+        .btn-arrow {
+            font-size: 18px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-focus:hover .btn-arrow {
+            transform: translateX(4px);
+        }
+
+        .cta-hint {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Danh sách đề cương tóm tắt phía dưới */
+        .syllabus-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 16px;
+        }
+
+        .syllabus-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .syllabus-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .syllabus-card ul {
+            padding-left: 18px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .syllabus-card li {
+            margin-bottom: 4px;
+        }
+
+        /* MÀN HÌNH BẤT NGỜ 20/11 (Ẩn ban đầu, hiện ngay tại cùng đường dẫn) */
+        #tribute-view {
+            display: none;
+            animation: fadeInScale 0.45s ease forwards;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tribute-card {
+            background: linear-gradient(145deg, #fffbeb 0%, #ffffff 55%, #fef2f2 100%);
+            border: 1px solid #fde68a;
+            border-radius: 16px;
+            padding: 36px 28px;
+            text-align: center;
+            box-shadow: 0 12px 32px rgba(180, 83, 9, 0.08);
+            position: relative;
+            z-index: 10;
+        }
+
+        .tribute-badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fcd34d;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 999px;
+            margin-bottom: 16px;
+        }
+
+        .tribute-title {
+            font-size: 30px;
+            font-weight: 800;
+            color: #991b1b;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .tribute-subtitle {
+            font-size: 16px;
+            color: #57534e;
+            max-width: 600px;
+            margin: 0 auto 24px;
+        }
+
+        /* Khung video chúc mừng 20/11 */
+        .video-frame {
+            position: relative;
+            width: 100%;
+            max-width: 680px;
+            margin: 0 auto 24px;
+            aspect-ratio: 16 / 9;
+            background: #1c1917;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+            border: 3px solid #ffffff;
+        }
+
+        .video-frame iframe,
+        .video-frame video {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .wish-box {
+            background: #ffffff;
+            border: 1px solid #fed7aa;
+            border-radius: 12px;
+            padding: 20px 24px;
+            max-width: 680px;
+            margin: 0 auto 24px;
+            font-size: 15px;
+            color: #44403c;
+            line-height: 1.75;
+            font-style: italic;
+        }
+
+        .tribute-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5f4;
+        }
+
+        .btn-replay-confetti {
+            background: #dc2626;
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-replay-confetti:hover {
+            background: #b91c1c;
+        }
+
+        /* Canvas pháo giấy */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @media (max-width: 640px) {
+            .doc-header { padding: 22px; }
+            .doc-title { font-size: 22px; }
+            .tribute-title { font-size: 24px; }
+            .doc-status { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Thanh header hiển thị đúng đường dẫn dài yêu cầu -->
+    <header class="top-navbar">
+        <div class="breadcrumb">
+            <span class="domain">avcb1.com</span>
+            <span>/</span>
+            <span>kien-thuc-cot-loi-hoc-phan-avcb1</span>
+            <span>/</span>
+            <span class="active-slug">tong-hop-trong-tam-on-thi-giua-ki</span>
+        </div>
+        <div class="doc-status">Tài liệu lưu hành nội bộ • Miễn phí</div>
+    </header>
+
+    <main class="container">
+        <!-- GIAO DIỆN 1: TÀI LIỆU ÔN THI AVCB1 -->
+        <section id="study-view">
+            <div class="doc-header">
+                <div class="course-tag">Học phần: Anh văn căn bản 1 (AVCB1)</div>
+                <h1 class="doc-title">Tổng hợp kiến thức trọng tâm ôn thi giữa kì học phần AVCB1</h1>
+                <div class="doc-meta">
+                    <span>Hình thức thi: Trắc nghiệm &amp; Đọc hiểu</span>
+                    <span>•</span>
+                    <span>Phạm vi: Unit 1 – Unit 4</span>
+                    <span>•</span>
+                    <span>Cập nhật: Học kì 1</span>
+                </div>
+
+                <div class="cta-wrapper">
+                    <button type="button" class="btn-focus" id="reveal-btn">
+                        <span class="btn-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                        </span>
+                        <span>Trọng tâm chi tiết</span>
+                        <span class="btn-pill">Bản đầy đủ</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                    <span class="cta-hint">Bao gồm bảng tổng hợp thì, cấu trúc câu thường gặp và bộ từ vựng cốt lõi.</span>
+                </div>
+            </div>
+
+            <div class="syllabus-grid">
+                <div class="syllabus-card">
+                    <h3>1. Ngữ pháp nền tảng (Grammar)</h3>
+                    <ul>
+                        <li>Thì hiện tại đơn (Present Simple) &amp; Hiện tại tiếp diễn (Present Continuous)</li>
+                        <li>Động từ To Be, trợ động từ và trạng từ chỉ tần suất</li>
+                        <li>Danh từ đếm được / không đếm được, mạo từ a/an/the</li>
+                    </ul>
+                </div>
+                <div class="syllabus-card">
+                    <h3>2. Từ vựng theo chủ đề (Vocabulary)</h3>
+                    <ul>
+                        <li>Thông tin cá nhân, nghề nghiệp và đời sống sinh viên</li>
+                        <li>Thói quen sinh hoạt hằng ngày &amp; hoạt động giải trí</li>
+                        <li>Chỉ đường, địa điểm và mô tả không gian sống</li>
+                    </ul>
+                </div>
+                <div class="syllabus-card">
+                    <h3>3. Kỹ năng Đọc hiểu (Reading)</h3>
+                    <ul>
+                        <li>Kỹ thuật Skimming nắm ý chính đoạn văn ngắn</li>
+                        <li>Kỹ thuật Scanning tìm từ khóa câu hỏi True/False</li>
+                    </ul>
+                </div>
+                <div class="syllabus-card">
+                    <h3>4. Giao tiếp tình huống (Functions)</h3>
+                    <ul>
+                        <li>Chào hỏi, giới thiệu bản thân và hỏi thăm thông tin</li>
+                        <li>Đưa ra lời mời, đề nghị và phản hồi lịch sự</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- GIAO DIỆN 2: BẤT NGỜ CHÚC MỪNG NGÀY NHÀ GIÁO VIỆT NAM 20/11 -->
+        <section id="tribute-view">
+            <div class="tribute-card">
+                <div class="tribute-badge">💐 CHÀO MỪNG NGÀY NHÀ GIÁO VIỆT NAM 20/11 💐</div>
+                <h2 class="tribute-title">Chúc Mừng Ngày Nhà Giáo Việt Nam 20/11!</h2>
+                <p class="tribute-subtitle">
+                    Cảm ơn Thầy/Cô đã luôn tận tâm dìu dắt và truyền cảm hứng cho chúng em trên hành trình chinh phục tri thức!
+                </p>
+
+                <!-- Khung phát video chúc mừng 20/11 -->
+                <div class="video-frame" id="video-container">
+                    <!-- Video sẽ được nạp tự động khi bấm nút để phát ngay -->
+                </div>
+
+                <div class="wish-box">
+                    "Nhân ngày Nhà giáo Việt Nam 20/11, kính chúc Thầy/Cô luôn dồi dào sức khỏe, giữ mãi ngọn lửa nhiệt huyết với sự nghiệp trồng người và gặt hái thật nhiều niềm vui, hạnh phúc bên các thế hệ học trò!"
+                </div>
+
+                <div class="tribute-actions">
+                    <button type="button" class="btn-replay-confetti" id="confetti-btn">🎉 Bắn thêm pháo hoa</button>
+                    <button type="button" class="btn-secondary" id="back-btn">← Quay lại trang đề cương AVCB1</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const revealBtn = document.getElementById('reveal-btn');
+        const backBtn = document.getElementById('back-btn');
+        const confettiBtn = document.getElementById('confetti-btn');
+        const studyView = document.getElementById('study-view');
+        const tributeView = document.getElementById('tribute-view');
+        const videoContainer = document.getElementById('video-container');
+
+        // Link video chúc mừng 20/11 (Bạn có thể thay đổi ID video YouTube hoặc dùng thẻ <video src="video-20-11.mp4"> cục bộ)
+        const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/5-55aP6-kE8?autoplay=1&rel=0";
+
+        revealBtn.addEventListener('click', () => {
+            studyView.style.display = 'none';
+            tributeView.style.display = 'block';
+
+            // Nạp iframe video khi người dùng bấm nút để tự động phát
+            videoContainer.innerHTML = `
+                <iframe
+                    src="${YOUTUBE_EMBED_URL}"
+                    title="Chúc mừng Ngày Nhà giáo Việt Nam 20/11"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            `;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            launchConfetti();
+        });
+
+        backBtn.addEventListener('click', () => {
+            // Dừng video khi quay lại
+            videoContainer.innerHTML = '';
+            tributeView.style.display = 'none';
+            studyView.style.display = 'block';
+        });
+
+        confettiBtn.addEventListener('click', () => {
+            launchConfetti();
+        });
+
+        // Hiệu ứng pháo giấy chúc mừng
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId = null;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function launchConfetti() {
+            const colors = ['#dc2626', '#f59e0b', '#16a34a', '#2563eb', '#db2777', '#eab308'];
+            for (let i = 0; i < 130; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    w: Math.random() * 10 + 6,
+                    h: Math.random() * 6 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedY: Math.random() * 3.5 + 2.2,
+                    speedX: Math.random() * 3 - 1.5,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: Math.random() * 8 - 4
+                });
+            }
+            if (!animationId) {
+                animateConfetti();
+            }
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotationSpeed;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+
+                if (p.y > canvas.height + 20) {
+                    particles.splice(index, 1);
+                }
+            });
+
+            if (particles.length > 0) {
+                animationId = requestAnimationFrame(animateConfetti);
+            } else {
+                animationId = null;
+            }
+        }
+    </script>
+</body>
+</html>
