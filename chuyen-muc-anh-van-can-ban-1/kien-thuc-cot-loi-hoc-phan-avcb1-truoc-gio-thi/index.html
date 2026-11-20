@@ -327,6 +327,15 @@
             border: 3px solid #ffffff;
         }
 
+        .video-frame:fullscreen,
+        .video-frame:-webkit-full-screen {
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            border: none;
+            border-radius: 0;
+        }
+
         .video-frame video {
             width: 100%;
             height: 100%;
@@ -528,7 +537,7 @@
 
                 <!-- Khung phát video nội bộ chúc mừng 20/11 -->
                 <div class="video-frame" id="video-container">
-                    <video id="local-video" src="./video-20-11.mp4" controls playsinline preload="auto"></video>
+                    <video id="local-video" src="/video-20-11.mp4" controls playsinline preload="metadata"></video>
                 </div>
 
                 <div class="wish-box">
@@ -554,22 +563,22 @@
         const videoContainer = document.getElementById('video-container');
         const localVideo = document.getElementById('local-video');
 
-        // Đường dẫn video nội bộ đặt cùng thư mục với index.html
-        const LOCAL_VIDEO_PATH = "./video-20-11.mp4";
+        // Đường dẫn video nội bộ ở thư mục gốc (trùng với đường dẫn mở thẳng /video-20-11.mp4)
+        const LOCAL_VIDEO_PATH = "/video-20-11.mp4";
         localVideo.src = LOCAL_VIDEO_PATH;
 
-        // Hàm kích hoạt phóng to toàn màn hình cho thẻ video
+        // Hàm kích hoạt phóng to toàn màn hình cho khung video
         async function enterVideoFullscreen() {
             try {
-                if (localVideo.requestFullscreen) {
-                    await localVideo.requestFullscreen();
-                } else if (localVideo.webkitRequestFullscreen) {
-                    await localVideo.webkitRequestFullscreen();
+                if (videoContainer.requestFullscreen) {
+                    await videoContainer.requestFullscreen();
+                } else if (videoContainer.webkitRequestFullscreen) {
+                    await videoContainer.webkitRequestFullscreen();
                 } else if (localVideo.webkitEnterFullscreen) {
                     // Hỗ trợ riêng cho Safari trên iOS
                     localVideo.webkitEnterFullscreen();
-                } else if (localVideo.msRequestFullscreen) {
-                    await localVideo.msRequestFullscreen();
+                } else if (videoContainer.msRequestFullscreen) {
+                    await videoContainer.msRequestFullscreen();
                 } else {
                     videoContainer.classList.add('pseudo-fullscreen');
                 }
@@ -586,21 +595,30 @@
             }
         });
 
-        revealBtn.addEventListener('click', () => {
+        revealBtn.addEventListener('click', async () => {
             studyView.style.display = 'none';
             tributeView.style.display = 'block';
 
             localVideo.currentTime = 0;
-            localVideo.play().catch(() => {});
-            enterVideoFullscreen();
+            try {
+                await localVideo.play();
+            } catch (err) {
+                // Nếu trình duyệt chặn phát có tiếng, chuyển sang phát tắt tiếng rồi bật lại tiếng
+                localVideo.muted = true;
+                await localVideo.play().catch(() => {});
+                localVideo.muted = false;
+            }
+
+            await enterVideoFullscreen();
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
             launchConfetti();
         });
 
-        fullscreenBtn.addEventListener('click', () => {
-            localVideo.play().catch(() => {});
-            enterVideoFullscreen();
+        fullscreenBtn.addEventListener('click', async () => {
+            localVideo.muted = false;
+            await localVideo.play().catch(() => {});
+            await enterVideoFullscreen();
         });
 
         backBtn.addEventListener('click', () => {
