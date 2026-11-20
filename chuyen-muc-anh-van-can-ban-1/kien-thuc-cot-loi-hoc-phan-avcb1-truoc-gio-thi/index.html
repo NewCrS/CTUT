@@ -32,7 +32,6 @@
             min-height: 100vh;
         }
 
-        /* Thanh điều hướng giả lập cổng học liệu */
         .top-navbar {
             background-color: var(--bg-card);
             border-bottom: 1px solid var(--border-color);
@@ -76,14 +75,12 @@
             white-space: nowrap;
         }
 
-        /* Container nội dung chính */
         .container {
             max-width: 820px;
             margin: 0 auto;
             padding: 40px 20px 80px;
         }
 
-        /* Phần tiêu đề tài liệu */
         .doc-header {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -127,7 +124,6 @@
             margin-bottom: 24px;
         }
 
-        /* Nút chính màu xanh lá có điểm nhấn */
         .cta-wrapper {
             display: flex;
             flex-direction: column;
@@ -153,7 +149,6 @@
             box-shadow: 0 4px 12px rgba(21, 128, 61, 0.22);
         }
 
-        /* Hiệu ứng vệt sáng lướt nhẹ bên trong nút */
         .btn-focus::after {
             content: "";
             position: absolute;
@@ -161,12 +156,7 @@
             left: -120%;
             width: 60%;
             height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.28),
-                transparent
-            );
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
             transform: skewX(-20deg);
             animation: shimmerSweep 3.8s infinite;
         }
@@ -198,7 +188,6 @@
             flex-shrink: 0;
         }
 
-        /* Điểm nhấn huy hiệu nhỏ bên trong nút */
         .btn-pill {
             font-size: 11px;
             font-weight: 600;
@@ -224,7 +213,6 @@
             color: var(--text-muted);
         }
 
-        /* Danh sách đề cương tóm tắt phía dưới */
         .syllabus-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -258,21 +246,14 @@
             margin-bottom: 4px;
         }
 
-        /* MÀN HÌNH BẤT NGỜ 20/11 (Ẩn ban đầu, hiện ngay tại cùng đường dẫn) */
         #tribute-view {
             display: none;
             animation: fadeInScale 0.45s ease forwards;
         }
 
         @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .tribute-card {
@@ -313,7 +294,6 @@
             margin: 0 auto 24px;
         }
 
-        /* Khung video chúc mừng 20/11 */
         .video-frame {
             position: relative;
             width: 100%;
@@ -327,6 +307,15 @@
             border: 3px solid #ffffff;
         }
 
+        .video-frame:fullscreen,
+        .video-frame:-webkit-full-screen {
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            border: none;
+            border-radius: 0;
+        }
+
         .video-frame video {
             width: 100%;
             height: 100%;
@@ -335,7 +324,6 @@
             background: #000000;
         }
 
-        /* Lớp phủ phóng to toàn màn hình dự phòng nếu trình duyệt chặn Fullscreen API */
         .video-frame.pseudo-fullscreen {
             position: fixed;
             inset: 0;
@@ -380,9 +368,7 @@
             transition: background 0.2s;
         }
 
-        .btn-secondary:hover {
-            background: #f5f5f4;
-        }
+        .btn-secondary:hover { background: #f5f5f4; }
 
         .btn-replay-confetti {
             background: #dc2626;
@@ -396,9 +382,7 @@
             transition: background 0.2s;
         }
 
-        .btn-replay-confetti:hover {
-            background: #b91c1c;
-        }
+        .btn-replay-confetti:hover { background: #b91c1c; }
 
         .btn-fullscreen-again {
             background: #15803d;
@@ -412,11 +396,8 @@
             transition: background 0.2s;
         }
 
-        .btn-fullscreen-again:hover {
-            background: #166534;
-        }
+        .btn-fullscreen-again:hover { background: #166534; }
 
-        /* Canvas pháo giấy */
         #confetti-canvas {
             position: fixed;
             top: 0;
@@ -439,20 +420,18 @@
 
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- Thanh header hiển thị đúng đường dẫn dài yêu cầu -->
     <header class="top-navbar">
         <div class="breadcrumb">
-            <span class="domain">avcb1.com</span>
+            <span class="domain">ctut.vercel.app</span>
             <span>/</span>
-            <span>kien-thuc-cot-loi-hoc-phan-avcb1</span>
+            <span>chuyen-muc-anh-van-can-ban-1</span>
             <span>/</span>
-            <span class="active-slug">tong-hop-trong-tam-on-thi-giua-ki</span>
+            <span class="active-slug">kien-thuc-cot-loi-hoc-phan-avcb1-truoc-gio-thi</span>
         </div>
         <div class="doc-status">Tài liệu lưu hành nội bộ • Miễn phí</div>
     </header>
 
     <main class="container">
-        <!-- GIAO DIỆN 1: TÀI LIỆU ÔN THI AVCB1 -->
         <section id="study-view">
             <div class="doc-header">
                 <div class="course-tag">Học phần: Anh văn căn bản 1 (AVCB1)</div>
@@ -517,7 +496,6 @@
             </div>
         </section>
 
-        <!-- GIAO DIỆN 2: BẤT NGỜ CHÚC MỪNG NGÀY NHÀ GIÁO VIỆT NAM 20/11 -->
         <section id="tribute-view">
             <div class="tribute-card">
                 <div class="tribute-badge">💐 CHÀO MỪNG NGÀY NHÀ GIÁO VIỆT NAM 20/11 💐</div>
@@ -526,9 +504,8 @@
                     Cảm ơn Thầy/Cô đã luôn tận tâm dìu dắt và truyền cảm hứng cho chúng em trên hành trình chinh phục tri thức!
                 </p>
 
-                <!-- Khung phát video nội bộ chúc mừng 20/11 -->
                 <div class="video-frame" id="video-container">
-                    <video id="local-video" src="./video-20-11.mp4" controls playsinline preload="auto"></video>
+                    <video id="local-video" src="video-20-11.mp4" controls playsinline preload="auto"></video>
                 </div>
 
                 <div class="wish-box">
@@ -554,53 +531,57 @@
         const videoContainer = document.getElementById('video-container');
         const localVideo = document.getElementById('local-video');
 
-        // Đường dẫn video nội bộ đặt cùng thư mục với index.html
-        const LOCAL_VIDEO_PATH = "./video-20-11.mp4";
+        // Đường dẫn tương đối cùng thư mục với index.html trên Vercel
+        const LOCAL_VIDEO_PATH = "video-20-11.mp4";
         localVideo.src = LOCAL_VIDEO_PATH;
 
-        // Hàm kích hoạt phóng to toàn màn hình cho thẻ video
         async function enterVideoFullscreen() {
             try {
-                if (localVideo.requestFullscreen) {
-                    await localVideo.requestFullscreen();
-                } else if (localVideo.webkitRequestFullscreen) {
-                    await localVideo.webkitRequestFullscreen();
+                if (videoContainer.requestFullscreen) {
+                    await videoContainer.requestFullscreen();
+                } else if (videoContainer.webkitRequestFullscreen) {
+                    await videoContainer.webkitRequestFullscreen();
                 } else if (localVideo.webkitEnterFullscreen) {
-                    // Hỗ trợ riêng cho Safari trên iOS
                     localVideo.webkitEnterFullscreen();
-                } else if (localVideo.msRequestFullscreen) {
-                    await localVideo.msRequestFullscreen();
+                } else if (videoContainer.msRequestFullscreen) {
+                    await videoContainer.msRequestFullscreen();
                 } else {
                     videoContainer.classList.add('pseudo-fullscreen');
                 }
             } catch (err) {
-                // Dự phòng nếu môi trường nhúng/trình duyệt từ chối Fullscreen API
                 videoContainer.classList.add('pseudo-fullscreen');
             }
         }
 
-        // Bấm Esc để thoát chế độ dự phòng pseudo-fullscreen nếu có
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && videoContainer.classList.contains('pseudo-fullscreen')) {
                 videoContainer.classList.remove('pseudo-fullscreen');
             }
         });
 
-        revealBtn.addEventListener('click', () => {
+        revealBtn.addEventListener('click', async () => {
             studyView.style.display = 'none';
             tributeView.style.display = 'block';
 
             localVideo.currentTime = 0;
-            localVideo.play().catch(() => {});
-            enterVideoFullscreen();
+            try {
+                await localVideo.play();
+            } catch (err) {
+                localVideo.muted = true;
+                await localVideo.play().catch(() => {});
+                localVideo.muted = false;
+            }
+
+            await enterVideoFullscreen();
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
             launchConfetti();
         });
 
-        fullscreenBtn.addEventListener('click', () => {
-            localVideo.play().catch(() => {});
-            enterVideoFullscreen();
+        fullscreenBtn.addEventListener('click', async () => {
+            localVideo.muted = false;
+            await localVideo.play().catch(() => {});
+            await enterVideoFullscreen();
         });
 
         backBtn.addEventListener('click', () => {
@@ -619,7 +600,6 @@
             launchConfetti();
         });
 
-        // Hiệu ứng pháo giấy chúc mừng
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
