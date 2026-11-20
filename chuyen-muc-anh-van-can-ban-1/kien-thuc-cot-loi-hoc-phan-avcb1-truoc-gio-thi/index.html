@@ -320,19 +320,32 @@
             max-width: 680px;
             margin: 0 auto 24px;
             aspect-ratio: 16 / 9;
-            background: #1c1917;
+            background: #000000;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
             border: 3px solid #ffffff;
         }
 
-        .video-frame iframe,
         .video-frame video {
             width: 100%;
             height: 100%;
-            border: none;
+            object-fit: contain;
             display: block;
+            background: #000000;
+        }
+
+        /* Lớp phủ phóng to toàn màn hình dự phòng nếu trình duyệt chặn Fullscreen API */
+        .video-frame.pseudo-fullscreen {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            margin: 0;
+            border: none;
+            border-radius: 0;
+            z-index: 9999;
         }
 
         .wish-box {
@@ -385,6 +398,22 @@
 
         .btn-replay-confetti:hover {
             background: #b91c1c;
+        }
+
+        .btn-fullscreen-again {
+            background: #15803d;
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-fullscreen-again:hover {
+            background: #166534;
         }
 
         /* Canvas pháo giấy */
@@ -447,7 +476,7 @@
                             </svg>
                         </span>
                         <span>Trọng tâm chi tiết</span>
-                        <span class="btn-pill">Bản đầy đủ</span>
+                        <span class="btn-pill">PDF</span>
                         <span class="btn-arrow">→</span>
                     </button>
                     <span class="cta-hint">Bao gồm bảng tổng hợp thì, cấu trúc câu thường gặp và bộ từ vựng cốt lõi.</span>
@@ -497,9 +526,9 @@
                     Cảm ơn Thầy/Cô đã luôn tận tâm dìu dắt và truyền cảm hứng cho chúng em trên hành trình chinh phục tri thức!
                 </p>
 
-                <!-- Khung phát video chúc mừng 20/11 -->
+                <!-- Khung phát video nội bộ chúc mừng 20/11 -->
                 <div class="video-frame" id="video-container">
-                    <!-- Video sẽ được nạp tự động khi bấm nút để phát ngay -->
+                    <video id="local-video" src="./video-20-11.mp4" controls playsinline preload="auto"></video>
                 </div>
 
                 <div class="wish-box">
@@ -507,6 +536,7 @@
                 </div>
 
                 <div class="tribute-actions">
+                    <button type="button" class="btn-fullscreen-again" id="fullscreen-btn">⛶ Phóng to toàn màn hình</button>
                     <button type="button" class="btn-replay-confetti" id="confetti-btn">🎉 Bắn thêm pháo hoa</button>
                     <button type="button" class="btn-secondary" id="back-btn">← Quay lại trang đề cương AVCB1</button>
                 </div>
@@ -518,34 +548,69 @@
         const revealBtn = document.getElementById('reveal-btn');
         const backBtn = document.getElementById('back-btn');
         const confettiBtn = document.getElementById('confetti-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
         const studyView = document.getElementById('study-view');
         const tributeView = document.getElementById('tribute-view');
         const videoContainer = document.getElementById('video-container');
+        const localVideo = document.getElementById('local-video');
 
-        // Link video chúc mừng 20/11 (Bạn có thể thay đổi ID video YouTube hoặc dùng thẻ <video src="video-20-11.mp4"> cục bộ)
-        const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/5-55aP6-kE8?autoplay=1&rel=0";
+        // Đường dẫn video nội bộ đặt cùng thư mục với index.html
+        const LOCAL_VIDEO_PATH = "./video-20-11.mp4";
+        localVideo.src = LOCAL_VIDEO_PATH;
+
+        // Hàm kích hoạt phóng to toàn màn hình cho thẻ video
+        async function enterVideoFullscreen() {
+            try {
+                if (localVideo.requestFullscreen) {
+                    await localVideo.requestFullscreen();
+                } else if (localVideo.webkitRequestFullscreen) {
+                    await localVideo.webkitRequestFullscreen();
+                } else if (localVideo.webkitEnterFullscreen) {
+                    // Hỗ trợ riêng cho Safari trên iOS
+                    localVideo.webkitEnterFullscreen();
+                } else if (localVideo.msRequestFullscreen) {
+                    await localVideo.msRequestFullscreen();
+                } else {
+                    videoContainer.classList.add('pseudo-fullscreen');
+                }
+            } catch (err) {
+                // Dự phòng nếu môi trường nhúng/trình duyệt từ chối Fullscreen API
+                videoContainer.classList.add('pseudo-fullscreen');
+            }
+        }
+
+        // Bấm Esc để thoát chế độ dự phòng pseudo-fullscreen nếu có
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && videoContainer.classList.contains('pseudo-fullscreen')) {
+                videoContainer.classList.remove('pseudo-fullscreen');
+            }
+        });
 
         revealBtn.addEventListener('click', () => {
             studyView.style.display = 'none';
             tributeView.style.display = 'block';
 
-            // Nạp iframe video khi người dùng bấm nút để tự động phát
-            videoContainer.innerHTML = `
-                <iframe
-                    src="${YOUTUBE_EMBED_URL}"
-                    title="Chúc mừng Ngày Nhà giáo Việt Nam 20/11"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen>
-                </iframe>
-            `;
+            localVideo.currentTime = 0;
+            localVideo.play().catch(() => {});
+            enterVideoFullscreen();
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
             launchConfetti();
         });
 
+        fullscreenBtn.addEventListener('click', () => {
+            localVideo.play().catch(() => {});
+            enterVideoFullscreen();
+        });
+
         backBtn.addEventListener('click', () => {
-            // Dừng video khi quay lại
-            videoContainer.innerHTML = '';
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(() => {});
+            }
+            videoContainer.classList.remove('pseudo-fullscreen');
+            localVideo.pause();
+            localVideo.currentTime = 0;
+
             tributeView.style.display = 'none';
             studyView.style.display = 'block';
         });
